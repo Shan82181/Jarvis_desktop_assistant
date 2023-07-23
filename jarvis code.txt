@@ -1,0 +1,86 @@
+import pyttsx3
+from datetime import datetime
+import webbrowser
+import os
+
+#FUNCTION FOR SPEAKING
+def speak(audio):
+    engine=pyttsx3.init('sapi5') #sapi5 ka use kar bhi sakte hai nahi bhi kar sakte
+    voices = engine.getProperty('voices')
+    engine.setProperty('voice', voices[1].id)# [0]=male voice,[1]=female voice
+    engine.say(audio)
+    engine.runAndWait()
+
+#FUNCTION FOR GREETING
+def wishMe():
+    from datetime import datetime
+    current_datetime=datetime.now()
+    if('4:00:00' <= current_datetime.strftime("%H:%M:%S")<= '11:59:59'):
+     speak("GOOD MORNING")
+    elif('12:00:00' <= current_datetime.strftime("%H:%M:%S")<='15:59:59'):
+     speak("GOOD AFTERNOON")
+    elif('16:00:00' <= current_datetime.strftime("%H:%M:%S")<='19:30:59'):
+     speak("GOOD AFTERNOON")
+    else:
+     speak("GOOD NIGHT")
+
+    speak("I am Jarvis Sir. Please tell me how may I help you")       
+
+
+import speech_recognition as sr
+def listening():
+    re=sr.Recognizer()
+    with sr.Microphone()as source:
+        print("listening...")
+        re.adjust_for_ambient_noise(source)
+        user_audio=re.listen(source)
+        try:
+         print("Recognizing...")    
+         query = re.recognize_google(user_audio,language="en-in")
+         print(f"User said: {query}")
+         return query      
+
+        except sr.UnknownValueError:
+           print("coud not understand")  
+             
+        except sr.RequestError as e:
+           print(f"error connecting to the google server;{e}")
+           
+def open_youtube():
+  webbrowser.open("https://www.youtube.com")
+def open_google():
+  webbrowser.open("https://www.google.com")
+def open_linkedin():
+  webbrowser.open("https://in.linkedin.com")
+
+def what_is_time():
+  current_datetime=datetime.now()
+  speak(current_datetime.strftime("%H:%M:%S"))
+  print(current_datetime.strftime("%H:%M:%S"))
+
+
+
+
+wishMe()
+while True:
+   user_input=listening()
+   if "open YouTube".lower() in user_input.lower():
+     speak("opening...YouTube...")
+     open_youtube()
+   elif "open google".lower() in user_input.lower():
+      speak("opening...Google...")
+      open_google()
+   elif "open linkedin".lower() in user_input.lower():
+     speak("opening...Linkedin...")
+     open_linkedin()
+   elif "tell the time".lower() in user_input.lower():
+     what_is_time()
+   elif 'play movie' in user_input.lower():
+    moviePath = "E:\\Movies\\cartoon\\NARUTO"
+    movie = os.listdir(moviePath)
+    print(movie)
+    os.startfile(os.path.join(moviePath, movie[0]))
+   else:
+     print("No query matched")
+     print("i will try to upgrade")
+     break
